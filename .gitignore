@@ -1,0 +1,4 @@
+# Ignore resulting files
+bin/
+obj/
+
