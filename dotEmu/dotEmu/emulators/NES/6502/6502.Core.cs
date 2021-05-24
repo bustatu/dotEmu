@@ -40,29 +40,35 @@ namespace dotEmu.emulators.NES
         // Reads from the bus
         private byte read(UInt16 addr)
         {
+            // Read from the bus
             return bus.read(addr, false);
         }
 
         // Writes to the bus
         private void write(UInt16 addr, Byte data)
         {
+            // Write to the bus
             bus.write(addr, data);
         }
 
         // Attaches the CPU to a specific bus
         public void attachToBus(Bus b)
         {
+            // Save bus for later usage
             bus = b;
         }
 
         // Sets and gets flags
         public Byte getFlag(CPUFlags flag)
         {
-            return 0;
+            return (Byte)(((status & (Byte)flag) > 0) ? 1 : 0);
         }
         public void setFlag(CPUFlags flag, bool value)
         {
-
+            if (value)
+                status |= (Byte)flag;
+            else
+                status &= (Byte)~flag;
         }
     }
 }

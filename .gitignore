@@ -1,4 +1,5 @@
 # Ignore resulting files
 bin/
 obj/
+.vs/
 

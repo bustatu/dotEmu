@@ -23,26 +23,6 @@ namespace dotEmu
             ALabel.Text = "A: " + emu.mainBus.cpu.a.ToString("X4");
             XLabel.Text = "X: " + emu.mainBus.cpu.x.ToString("X4");
             YLabel.Text = "Y: " + emu.mainBus.cpu.y.ToString("X4");
-            MemoryLabel.Text = "Memory: \n";
-            for (var i = 0; i <= 0xF; i++)
-            {
-                MemoryLabel.Text += "$00" + i.ToString("X1") + "0: ";
-                for (int j = 0; j <= 0xF; j++)
-                    MemoryLabel.Text += emu.mainBus.ram[(i << 8) | j].ToString("X2") + " ";
-                MemoryLabel.Text += "\n";
-            }
-            MemoryLabel1.Text = "Memory: \n";
-            for (var i = 0; i <= 0xF; i++)
-            {
-                MemoryLabel1.Text += "$80" + i.ToString("X1") + "0: ";
-                for (int j = 0; j <= 0xF; j++)
-                    MemoryLabel1.Text += emu.mainBus.ram[0x8000 | ((i << 8) | j)].ToString("X2") + " ";
-                MemoryLabel1.Text += "\n";
-            }
-
-            dissLabel.Text = "Dissasembly: \n";
-            for (int j = -0xA; j <= 0xA; j++)
-                dissLabel.Text += "$" + (emu.mainBus.cpu.pc + j).ToString("X4") + ": " + emu.mainBus.cpu.lookupTable[emu.mainBus.ram[emu.mainBus.cpu.pc + j]].name + "\n";
 
             if (emu.mainBus.cpu.getFlag(CPU6502.CPUFlags.N) == 0)
                 NLabel.ForeColor = Color.Red;

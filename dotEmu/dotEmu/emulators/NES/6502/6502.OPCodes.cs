@@ -76,6 +76,22 @@ namespace dotEmu.emulators.NES
         }
         public Byte ASL()
         {
+            // Shift left
+            fetch();
+            UInt16 temp = (UInt16)(fetched << 1);
+
+            // Set flags
+            setFlag(CPUFlags.C, (temp & 0xFF00) > 0);
+            setFlag(CPUFlags.Z, (temp & 0xFF00) == 0);
+            setFlag(CPUFlags.N, (temp & 0x80) != 0);
+
+            // If implied adressing we save directly to the acumulator
+            if (lookupTable[opcode].addrMode == IMP)
+                a = (Byte)(temp & 0x00FF);
+            // Else we write to the memory
+            else
+                write(addr_abs, (Byte)(temp & 0x00FF));
+
             return 0;
         }
         public Byte BCC()
@@ -128,6 +144,16 @@ namespace dotEmu.emulators.NES
         }
         public Byte BIT()
         {
+            // Bitwise AND ?????
+            fetch();
+
+            Byte temp = (Byte)(a & fetched);
+
+            // Set flags
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0);
+            setFlag(CPUFlags.N, (fetched & (1 << 7)) != 0);
+            setFlag(CPUFlags.V, (fetched & (1 << 6)) != 0);
+
             return 0;
         }
         public Byte BMI()
@@ -180,6 +206,25 @@ namespace dotEmu.emulators.NES
         }
         public Byte BRK()
         {
+            // Program sourced intrerupt
+            pc++;
+
+            // Write current location to stack
+            setFlag(CPUFlags.I, true);
+            write((UInt16)(0x100 + sp), (Byte)((pc >> 8) & 0x00FF));
+            sp--;
+            write((UInt16)(0x100 + sp), (Byte)(pc & 0x00FF));
+            sp--;
+
+            // Write status to flag
+            setFlag(CPUFlags.B, true);
+            write((UInt16)(0x100 + sp), status);
+            sp--;
+            setFlag(CPUFlags.B, false);
+
+            // Go to specific location from PC
+            pc = (UInt16)(read(0xFFFE) | (read(0xFFFF) << 8));
+
             return 0;
         }
         public Byte BVC()
@@ -234,58 +279,164 @@ namespace dotEmu.emulators.NES
         }
         public Byte CLV()
         {
+            // Clear overflow flag
+            setFlag(CPUFlags.V, false);
             return 0;
         }
         public Byte CMP()
         {
-            return 0;
+            // Compare acumulator to fetched
+            fetch();
+
+            // Calculate results
+            UInt16 temp = (UInt16)(a - fetched);
+
+            // Set flags
+            setFlag(CPUFlags.C, a >= fetched);
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
+            return 1;
         }
         public Byte CPX()
         {
+            // Compare X register to fetched
+            fetch();
+
+            // Calculate results
+            UInt16 temp = (UInt16)(x - fetched);
+
+            // Set flags
+            setFlag(CPUFlags.C, x >= fetched);
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
             return 0;
         }
         public Byte CPY()
         {
+            // Compare X register to fetched
+            fetch();
+
+            // Calculate results
+            UInt16 temp = (UInt16)(y - fetched);
+
+            // Set flags
+            setFlag(CPUFlags.C, y >= fetched);
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
             return 0;
         }
         public Byte DEC()
         {
+            // Decrement value at memory location
+            fetch();
+
+            // Fetch and decrement and write
+            Byte temp = (Byte)(fetched - 1);
+            write(addr_abs, (Byte)(temp & 0x00FF));
+
+            // Set flags
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0x0000);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
             return 0;
         }
         public Byte DEX()
         {
+            // Decrement X register
+            x--;
+
+            // Set flags
+            setFlag(CPUFlags.Z, x == 0);
+            setFlag(CPUFlags.N, (x & 0x80) != 0);
+
             return 0;
         }
         public Byte DEY()
         {
             // Decrement Y register
             y--;
-            setFlag(CPUFlags.Z, (y == 0));
+
+            // Set flags
+            setFlag(CPUFlags.Z, y == 0);
             setFlag(CPUFlags.N, (y & 0x80) != 0);
+
             return 0;
         }
         public Byte EOR()
         {
-            return 0;
+            // Logic XOR
+            fetch();
+
+            // XOR the acumulator with the fetched result
+            a = (Byte)(a ^ fetched);
+
+            // Set flags
+            setFlag(CPUFlags.Z, a == 0);
+            setFlag(CPUFlags.N, (a & 0x80) != 0);
+
+            return 1;
         }
         public Byte INC()
         {
+            // Decrement value at memory location
+            fetch();
+
+            // Fetch and decrement and write
+            Byte temp = (Byte)(fetched + 1);
+            write(addr_abs, (Byte)(temp & 0x00FF));
+
+            // Set flags
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0x0000);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
             return 0;
         }
         public Byte INX()
         {
+            // Increment X register
+            x++;
+
+            // Set flags
+            setFlag(CPUFlags.Z, x == 0);
+            setFlag(CPUFlags.N, (x & 0x80) != 0);
+
             return 0;
         }
         public Byte INY()
         {
+            // Increment Y register
+            y++;
+
+            // Set flags
+            setFlag(CPUFlags.Z, y == 0);
+            setFlag(CPUFlags.N, (y & 0x80) != 0);
+
             return 0;
         }
         public Byte JMP()
         {
+            // Jump to adress at location
+            pc = addr_abs;
+
             return 0;
         }
         public Byte JSR()
         {
+            // Jump to subroutine
+            pc--;
+
+            // Write current position to stack
+            write((UInt16)(0x0100 + sp), (Byte)((pc >> 8) & 0x00FF));
+            sp--;
+            write((UInt16)(0x0100 + sp), (Byte)(pc & 0x00FF));
+            sp--;
+
+            // Jump
+            pc = addr_abs;
+
             return 0;
         }
         public Byte LDA()
@@ -329,15 +480,55 @@ namespace dotEmu.emulators.NES
         }
         public Byte LSR()
         {
+            // Right shift
+            fetch();
+            
+            // Save last byte digit
+            setFlag(CPUFlags.C, (fetched & 0x0001) != 0);
+
+            // Shift
+            Byte temp = (Byte)(fetched >> 1);
+
+            // Set flags
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
+            // If adress mode is implied save to acumulator
+            if (lookupTable[opcode].addrMode == IMP)
+                a = (Byte)(temp & 0x00FF);
+            else
+                // Write to memory
+                write(addr_abs, (Byte)(temp & 0x00FF));
             return 0;
         }
         public Byte NOP()
         {
+            // NOPs are not equal
+            switch (opcode)
+            {
+                case 0x1C:
+                case 0x3C:
+                case 0x5C:
+                case 0x7C:
+                case 0xDC:
+                case 0xFC:
+                    return 1;
+            }
             return 0;
         }
         public Byte ORA()
         {
-            return 0;
+            // Logic OR
+            fetch();
+
+            // Store result in acumulator
+            a = (Byte)(a | fetched);
+
+            // Set flags
+            setFlag(CPUFlags.Z, a == 0x00);
+            setFlag(CPUFlags.N, (a & 0x80) != 0);
+
+            return 1;
         }
         public Byte PHA()
         {
@@ -348,11 +539,19 @@ namespace dotEmu.emulators.NES
         }
         public Byte PHP()
         {
+            // Push status register to stack
+            write((UInt16)(0x0100 + sp), (Byte)(status | (Byte)CPUFlags.B | (Byte)CPUFlags.U));
+            
+            // Set flags
+            setFlag(CPUFlags.B, false);
+            setFlag(CPUFlags.U, false);
+            sp--;
+
             return 0;
         }
         public Byte PLA()
         {
-            // Pop from stack
+            // Pop acumulator from stack
             sp++;
             a = read((UInt16)(0x100 + sp));
 
@@ -367,15 +566,50 @@ namespace dotEmu.emulators.NES
             // Pop status register from stack
             sp++;
             status = read((Byte)(0x1000 + sp));
+
+            // Set flags
             setFlag(CPUFlags.U, true);
+
             return 0;
         }
         public Byte ROL()
         {
+            // Add digit to the back of the number
+            fetch();
+            UInt16 temp = (UInt16)((fetched << 1) | getFlag(CPUFlags.C));
+
+            // Set flags
+            setFlag(CPUFlags.C, (temp & 0xFF00) != 0);
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
+            // If implied mode save to accumulator
+            if (lookupTable[opcode].addrMode == IMP)
+                a = (Byte)(temp & 0x00FF);
+            else
+                // Write to memory
+                write(addr_abs, (Byte)(temp & 0x00FF));
+
             return 0;
         }
         public Byte ROR()
         {
+            // Add digit to the front of the number
+            fetch();
+            UInt16 temp = (UInt16)((getFlag(CPUFlags.C) << 7) | (fetched >> 1));
+
+            // Set flags
+            setFlag(CPUFlags.C, (fetched & 0x01) != 0);
+            setFlag(CPUFlags.Z, (temp & 0x00FF) == 0x00);
+            setFlag(CPUFlags.N, (temp & 0x0080) != 0);
+
+            // If implied mode then save to acumulator
+            if (lookupTable[opcode].addrMode == IMP)
+                a = (Byte)(temp & 0x00FF);
+            else
+                // Write to memory
+                write(addr_abs, (Byte)(temp & 0x00FF));
+
             return 0;
         }
         public Byte RTI()
@@ -398,6 +632,13 @@ namespace dotEmu.emulators.NES
         }
         public Byte RTS()
         {
+            // Return from stack
+            sp++;
+            pc = (UInt16)read((UInt16)(0x0100 + sp));
+            sp++;
+            pc |= (UInt16)(read((UInt16)(0x0100 + sp)) << 8);
+            pc++;
+
             return 0;
         }
         public Byte SBC()
@@ -431,56 +672,105 @@ namespace dotEmu.emulators.NES
         }
         public Byte SEC()
         {
+            // Set carry flag
+            setFlag(CPUFlags.C, true);
             return 0;
         }
         public Byte SED()
         {
+            // Set decimal flag
+            setFlag(CPUFlags.D, true);
             return 0;
         }
         public Byte SEI()
         {
+            // Set intrerupt flag
+            setFlag(CPUFlags.I, true);
             return 0;
         }
         public Byte STA()
         {
+            // Store acumulator at adress
+            write(addr_abs, a);
             return 0;
         }
         public Byte STX()
         {
-            // Write X register to absolute adress
+            // Store x at adress
             write(addr_abs, x);
             return 0;
         }
         public Byte STY()
         {
+            // Store y at adress
+            write(addr_abs, y);
             return 0;
         }
         public Byte TAX()
         {
+            // Transfer acumulator to x
+            x = a;
+
+            // Set flags
+            setFlag(CPUFlags.Z, x == 0x00);
+            setFlag(CPUFlags.N, (x & 0x80) != 0);
+
             return 0;
         }
         public Byte TAY()
         {
+            // Transfer acumulator to x
+            y = a;
+
+            // Set flags
+            setFlag(CPUFlags.Z, y == 0x00);
+            setFlag(CPUFlags.N, (y & 0x80) != 0);
+
             return 0;
         }
         public Byte TSX()
         {
+            // Transfer stack pointer to x
+            x = sp;
+
+            // Set flags
+            setFlag(CPUFlags.Z, x == 0x00);
+            setFlag(CPUFlags.N, (x & 0x80) != 0);
+
             return 0;
         }
         public Byte TXA()
         {
+            // Transfer x to acumulator
+            a = x;
+
+            // Set flags
+            setFlag(CPUFlags.Z, a == 0x00);
+            setFlag(CPUFlags.N, (a & 0x80) != 0);
+
             return 0;
         }
         public Byte TXS()
         {
+            // Transfer x to stack pointer
+            sp = x;
+
             return 0;
         }
         public Byte TYA()
         {
+            // Transfer y to acumulator
+            a = y;
+
+            // Set flags
+            setFlag(CPUFlags.Z, a == 0x00);
+            setFlag(CPUFlags.N, (a & 0x80) != 0);
+
             return 0;
         }
         public Byte XXX()
         {
+            // Illegal opcode
             return 0;
         }
         public void clock()

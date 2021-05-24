@@ -44,9 +44,6 @@ namespace dotEmu
             this.ALabel = new System.Windows.Forms.Label();
             this.XLabel = new System.Windows.Forms.Label();
             this.YLabel = new System.Windows.Forms.Label();
-            this.MemoryLabel = new System.Windows.Forms.Label();
-            this.MemoryLabel1 = new System.Windows.Forms.Label();
-            this.dissLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // clockLabel
@@ -185,42 +182,12 @@ namespace dotEmu
             this.YLabel.TabIndex = 14;
             this.YLabel.Text = "Y: -1";
             // 
-            // MemoryLabel
-            // 
-            this.MemoryLabel.AutoSize = true;
-            this.MemoryLabel.Location = new System.Drawing.Point(10, 75);
-            this.MemoryLabel.Name = "MemoryLabel";
-            this.MemoryLabel.Size = new System.Drawing.Size(47, 13);
-            this.MemoryLabel.TabIndex = 15;
-            this.MemoryLabel.Text = "Memory:";
-            // 
-            // MemoryLabel1
-            // 
-            this.MemoryLabel1.AutoSize = true;
-            this.MemoryLabel1.Location = new System.Drawing.Point(300, 75);
-            this.MemoryLabel1.Name = "MemoryLabel1";
-            this.MemoryLabel1.Size = new System.Drawing.Size(47, 13);
-            this.MemoryLabel1.TabIndex = 16;
-            this.MemoryLabel1.Text = "Memory:";
-            // 
-            // dissLabel
-            // 
-            this.dissLabel.AutoSize = true;
-            this.dissLabel.Location = new System.Drawing.Point(604, 8);
-            this.dissLabel.Name = "dissLabel";
-            this.dissLabel.Size = new System.Drawing.Size(68, 13);
-            this.dissLabel.TabIndex = 17;
-            this.dissLabel.Text = "Dissasembly:";
-            // 
             // mainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(809, 434);
-            this.Controls.Add(this.dissLabel);
-            this.Controls.Add(this.MemoryLabel1);
-            this.Controls.Add(this.MemoryLabel);
             this.Controls.Add(this.YLabel);
             this.Controls.Add(this.XLabel);
             this.Controls.Add(this.ALabel);
@@ -264,8 +231,5 @@ namespace dotEmu
         private System.Windows.Forms.Label ALabel;
         private System.Windows.Forms.Label XLabel;
         private System.Windows.Forms.Label YLabel;
-        private System.Windows.Forms.Label MemoryLabel;
-        private System.Windows.Forms.Label MemoryLabel1;
-        private System.Windows.Forms.Label dissLabel;
     }
 }
