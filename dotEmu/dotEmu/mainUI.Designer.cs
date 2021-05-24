@@ -208,7 +208,6 @@ namespace dotEmu
             this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.Name = "mainUI";
             this.Text = "Emulator Engine";
-            this.Load += new System.EventHandler(this.mainUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

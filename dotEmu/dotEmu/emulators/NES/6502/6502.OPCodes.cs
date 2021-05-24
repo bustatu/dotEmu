@@ -4,8 +4,6 @@ using System.Windows.Forms;
 /* Resources used:
  * http://archive.6502.org/datasheets/rockwell_r650x_r651x.pdf
  * https://www.youtube.com/watch?v=8XmxKPJDGU0
- * https://github.com/OneLoneCoder/olcNES
- * https://github.com/Xyene/Emulator.NES
 */
 
 namespace dotEmu.emulators.NES

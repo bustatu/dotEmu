@@ -48,10 +48,14 @@
     <Compile Include="App.cs" />
     <Compile Include="emulators\CHIP8\CHIP8Emulator.cs" />
     <Compile Include="emulators\IEmulator.cs" />
+    <Compile Include="emulators\NES\2502\PPU2502.cs" />
     <Compile Include="emulators\NES\6502\6502.AdressingModes.cs" />
     <Compile Include="emulators\NES\6502\6502.Core.cs" />
     <Compile Include="emulators\NES\6502\6502.OPCodes.cs" />
     <Compile Include="emulators\NES\Bus.cs" />
+    <Compile Include="emulators\NES\Cartridge.cs" />
+    <Compile Include="emulators\NES\Mappers\Mapper.cs" />
+    <Compile Include="emulators\NES\Mappers\Mapper000.cs" />
     <Compile Include="emulators\NES\NESEmulator.cs" />
     <Compile Include="mainUI.cs">
       <SubType>Form</SubType>

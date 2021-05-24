@@ -34,21 +34,21 @@ namespace dotEmu.emulators.NES
         }
         ~CPU6502()
         {
-
+            // Destructor has nothing to do yet
         }
 
         // Reads from the bus
         private byte read(UInt16 addr)
         {
             // Read from the bus
-            return bus.read(addr, false);
+            return bus.CPURead(addr, false);
         }
 
         // Writes to the bus
         private void write(UInt16 addr, Byte data)
         {
             // Write to the bus
-            bus.write(addr, data);
+            bus.CPUWrite(addr, data);
         }
 
         // Attaches the CPU to a specific bus

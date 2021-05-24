@@ -16,7 +16,8 @@ namespace dotEmu
 
         private void doStepButton_Click(object sender, System.EventArgs e)
         {
-            emu.mainBus.cpu.clock();
+            while(emu.mainBus.cpu.cycles != 0) emu.mainBus.cpu.clock();
+
             clockLabel.Text = "Clock: " + emu.mainBus.cpu.cycles.ToString();
             PCLabel.Text = "PC: " + emu.mainBus.cpu.pc.ToString("X4");
             SPLabel.Text = "SP: " + emu.mainBus.cpu.sp.ToString("X4");
@@ -63,46 +64,6 @@ namespace dotEmu
                 CLabel.ForeColor = Color.Red;
             else
                 CLabel.ForeColor = Color.Green;
-        }
-
-        private void mainUI_Load(object sender, System.EventArgs e)
-        {
-            // Load ROM by hand
-            emu.mainBus.ram[0x8000] = 0xA2;
-            emu.mainBus.ram[0x8001] = 0x0A;
-            emu.mainBus.ram[0x8002] = 0x8E;
-            emu.mainBus.ram[0x8003] = 0x00;
-            emu.mainBus.ram[0x8004] = 0x00;
-            emu.mainBus.ram[0x8005] = 0xA2;
-            emu.mainBus.ram[0x8006] = 0x03;
-            emu.mainBus.ram[0x8007] = 0x8E;
-            emu.mainBus.ram[0x8008] = 0x01;
-            emu.mainBus.ram[0x8009] = 0x00;
-            emu.mainBus.ram[0x800A] = 0xAC;
-            emu.mainBus.ram[0x800B] = 0x00;
-            emu.mainBus.ram[0x800C] = 0x00;
-            emu.mainBus.ram[0x800D] = 0xA9;
-            emu.mainBus.ram[0x800E] = 0x00;
-            emu.mainBus.ram[0x800F] = 0x18;
-            emu.mainBus.ram[0x8010] = 0x6D;
-            emu.mainBus.ram[0x8011] = 0x01;
-            emu.mainBus.ram[0x8012] = 0x00;
-            emu.mainBus.ram[0x8013] = 0x88;
-            emu.mainBus.ram[0x8014] = 0xD0;
-            emu.mainBus.ram[0x8015] = 0xFA;
-            emu.mainBus.ram[0x8016] = 0x8D;
-            emu.mainBus.ram[0x8017] = 0x02;
-            emu.mainBus.ram[0x8018] = 0x00;
-            emu.mainBus.ram[0x8019] = 0xEA;
-            emu.mainBus.ram[0x801A] = 0xEA;
-            emu.mainBus.ram[0x801B] = 0xEA;
-
-            // Set reset vector
-            emu.mainBus.ram[0xFFFC] = 0x00;
-            emu.mainBus.ram[0xFFFD] = 0x80;
-
-            // Reset CPU
-            emu.mainBus.cpu.reset();
         }
     }
 }
