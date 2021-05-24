@@ -125,7 +125,7 @@ namespace dotEmu.emulators.NES
             UInt16 ptr = (UInt16)((ptr_hi << 8) | ptr_lo);
 
             // Page boundary
-            if(ptr_lo == 0x00FF)
+            if (ptr_lo == 0x00FF)
             {
                 // Compose adress from pointer location
                 addr_abs = (UInt16)((read((UInt16)(ptr & 0xFF00)) << 8) | read(ptr));

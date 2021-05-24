@@ -24,7 +24,7 @@ namespace dotEmu
             XLabel.Text = "X: " + emu.mainBus.cpu.x.ToString("X4");
             YLabel.Text = "Y: " + emu.mainBus.cpu.y.ToString("X4");
             MemoryLabel.Text = "Memory: \n";
-            for(var i = 0; i <= 0xF; i++)
+            for (var i = 0; i <= 0xF; i++)
             {
                 MemoryLabel.Text += "$00" + i.ToString("X1") + "0: ";
                 for (int j = 0; j <= 0xF; j++)
@@ -36,7 +36,7 @@ namespace dotEmu
             {
                 MemoryLabel1.Text += "$80" + i.ToString("X1") + "0: ";
                 for (int j = 0; j <= 0xF; j++)
-                    MemoryLabel1.Text += emu.mainBus.ram[0x8000 |((i << 8) | j)].ToString("X2") + " ";
+                    MemoryLabel1.Text += emu.mainBus.ram[0x8000 | ((i << 8) | j)].ToString("X2") + " ";
                 MemoryLabel1.Text += "\n";
             }
 
@@ -95,6 +95,27 @@ namespace dotEmu
             emu.mainBus.ram[0x8004] = 0x00;
             emu.mainBus.ram[0x8005] = 0xA2;
             emu.mainBus.ram[0x8006] = 0x03;
+            emu.mainBus.ram[0x8007] = 0x8E;
+            emu.mainBus.ram[0x8008] = 0x01;
+            emu.mainBus.ram[0x8009] = 0x00;
+            emu.mainBus.ram[0x800A] = 0xAC;
+            emu.mainBus.ram[0x800B] = 0x00;
+            emu.mainBus.ram[0x800C] = 0x00;
+            emu.mainBus.ram[0x800D] = 0xA9;
+            emu.mainBus.ram[0x800E] = 0x00;
+            emu.mainBus.ram[0x800F] = 0x18;
+            emu.mainBus.ram[0x8010] = 0x6D;
+            emu.mainBus.ram[0x8011] = 0x01;
+            emu.mainBus.ram[0x8012] = 0x00;
+            emu.mainBus.ram[0x8013] = 0x88;
+            emu.mainBus.ram[0x8014] = 0xD0;
+            emu.mainBus.ram[0x8015] = 0xFA;
+            emu.mainBus.ram[0x8016] = 0x8D;
+            emu.mainBus.ram[0x8017] = 0x02;
+            emu.mainBus.ram[0x8018] = 0x00;
+            emu.mainBus.ram[0x8019] = 0xEA;
+            emu.mainBus.ram[0x801A] = 0xEA;
+            emu.mainBus.ram[0x801B] = 0xEA;
 
             // Set reset vector
             emu.mainBus.ram[0xFFFC] = 0x00;

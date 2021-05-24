@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace dotEmu.emulators.NES
 {
@@ -31,7 +30,7 @@ namespace dotEmu.emulators.NES
         public void write(UInt16 addr, Byte data)
         {
             // Bounds check
-            if(addr >= 0x0000 && addr <= 0xFFFF)
+            if (addr >= 0x0000 && addr <= 0xFFFF)
                 ram[addr] = data;
         }
 

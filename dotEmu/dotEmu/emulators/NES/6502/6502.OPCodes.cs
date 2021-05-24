@@ -4,6 +4,8 @@ using System.Windows.Forms;
 /* Resources used:
  * http://archive.6502.org/datasheets/rockwell_r650x_r651x.pdf
  * https://www.youtube.com/watch?v=8XmxKPJDGU0
+ * https://github.com/OneLoneCoder/olcNES
+ * https://github.com/Xyene/Emulator.NES
 */
 
 namespace dotEmu.emulators.NES
@@ -256,6 +258,10 @@ namespace dotEmu.emulators.NES
         }
         public Byte DEY()
         {
+            // Decrement Y register
+            y--;
+            setFlag(CPUFlags.Z, (y == 0));
+            setFlag(CPUFlags.N, (y & 0x80) != 0);
             return 0;
         }
         public Byte EOR()
@@ -284,7 +290,16 @@ namespace dotEmu.emulators.NES
         }
         public Byte LDA()
         {
-            return 0;
+            // Load value in A
+            fetch();
+
+            a = fetched;
+
+            // Set flags
+            setFlag(CPUFlags.Z, a == 0);
+            setFlag(CPUFlags.N, (a & 0x80) != 0);
+
+            return 1;
         }
         public Byte LDX()
         {
@@ -297,11 +312,20 @@ namespace dotEmu.emulators.NES
             setFlag(CPUFlags.Z, x == 0);
             setFlag(CPUFlags.N, (x & 0x80) != 0);
 
-            return 0;
+            return 1;
         }
         public Byte LDY()
         {
-            return 0;
+            // Load value in Y
+            fetch();
+
+            y = fetched;
+
+            // Set flags
+            setFlag(CPUFlags.Z, y == 0);
+            setFlag(CPUFlags.N, (y & 0x80) != 0);
+
+            return 1;
         }
         public Byte LSR()
         {
@@ -340,6 +364,10 @@ namespace dotEmu.emulators.NES
         }
         public Byte PLP()
         {
+            // Pop status register from stack
+            sp++;
+            status = read((Byte)(0x1000 + sp));
+            setFlag(CPUFlags.U, true);
             return 0;
         }
         public Byte ROL()
@@ -419,6 +447,8 @@ namespace dotEmu.emulators.NES
         }
         public Byte STX()
         {
+            // Write X register to absolute adress
+            write(addr_abs, x);
             return 0;
         }
         public Byte STY()
@@ -456,7 +486,7 @@ namespace dotEmu.emulators.NES
         public void clock()
         {
             // If we can execute the opcode
-            if(cycles == 0)
+            if (cycles == 0)
             {
                 // Read it from the location and increment
                 opcode = read(pc);
@@ -475,7 +505,7 @@ namespace dotEmu.emulators.NES
                 // Update for variable lengths
                 cycles += (Byte)(duration1 & duration2);
             }
-            
+
             // One clock cycle has passed
             cycles--;
         }
@@ -500,7 +530,7 @@ namespace dotEmu.emulators.NES
             // Default values
             addr_rel = 0;
             addr_abs = 0;
-            fetched  = 0;
+            fetched = 0;
 
             // Reset takes time
             cycles = 8;
@@ -508,7 +538,7 @@ namespace dotEmu.emulators.NES
         public void irq()
         {
             // If intrerupts are not disabled
-            if(getFlag(CPUFlags.I) == 0)
+            if (getFlag(CPUFlags.I) == 0)
             {
                 // Write current PC to stack
                 write((UInt16)(0x100 + sp), (Byte)((pc >> 8) & 0x00FF));
@@ -622,8 +652,8 @@ namespace dotEmu.emulators.NES
             lookupTable[0x11].assign("ORA", ORA, IZY, 5);
             lookupTable[0x15].assign("ORA", ORA, ZPX, 4);
             lookupTable[0x16].assign("ASL", ASL, ZPX, 6);
-            lookupTable[0x17].assign("CLC", CLC, IMP, 2);
-            lookupTable[0x18].assign("ORA", ORA, ABY, 4);
+            lookupTable[0x18].assign("PLP", PLP, IMP, 4);
+            lookupTable[0x19].assign("ORA", ORA, ABY, 4);
             lookupTable[0x1D].assign("ORA", ORA, ABX, 4);
             lookupTable[0x1E].assign("ASL", ASL, ABX, 7);
 
@@ -639,6 +669,55 @@ namespace dotEmu.emulators.NES
             lookupTable[0x2D].assign("AND", AND, ABS, 4);
             lookupTable[0x2E].assign("ROL", ROL, ABS, 6);
 
+            lookupTable[0x30].assign("BMI", BMI, REL, 2);
+            lookupTable[0x31].assign("AND", AND, IZY, 5);
+            lookupTable[0x35].assign("AND", AND, ZPX, 4);
+            lookupTable[0x36].assign("ROL", ROL, ZPX, 6);
+            lookupTable[0x38].assign("SEC", SEC, IMP, 2);
+            lookupTable[0x39].assign("AND", AND, ABY, 4);
+            lookupTable[0x3D].assign("AND", AND, ABX, 4);
+            lookupTable[0x3E].assign("ROL", ROL, ABX, 7);
+
+            lookupTable[0x40].assign("RTI", RTI, IMP, 6);
+            lookupTable[0x41].assign("EOR", EOR, IZX, 6);
+            lookupTable[0x45].assign("EOR", EOR, ZP0, 3);
+            lookupTable[0x46].assign("LSR", LSR, ZP0, 5);
+            lookupTable[0x48].assign("PHA", PHA, IMP, 3);
+            lookupTable[0x49].assign("EOR", EOR, IMM, 2);
+            lookupTable[0x4A].assign("LSR", LSR, IMP, 2);
+            lookupTable[0x4C].assign("JMP", JMP, ABS, 3);
+            lookupTable[0x4D].assign("EOR", EOR, ABS, 4);
+            lookupTable[0x4E].assign("LSR", LSR, ABS, 6);
+
+            lookupTable[0x50].assign("BVC", BVC, REL, 2);
+            lookupTable[0x51].assign("EOR", EOR, IZY, 5);
+            lookupTable[0x55].assign("EOR", EOR, ZPX, 4);
+            lookupTable[0x56].assign("LSR", LSR, ZPX, 6);
+            lookupTable[0x58].assign("CLI", CLI, IMP, 2);
+            lookupTable[0x59].assign("EOR", EOR, ABY, 4);
+            lookupTable[0x5D].assign("EOR", EOR, ABX, 4);
+            lookupTable[0x5E].assign("LSR", LSR, ABX, 7);
+
+            lookupTable[0x60].assign("RTS", RTS, IMP, 6);
+            lookupTable[0x61].assign("ADC", ADC, IZX, 6);
+            lookupTable[0x65].assign("ADC", ADC, ZP0, 3);
+            lookupTable[0x66].assign("ROR", ROR, ZP0, 5);
+            lookupTable[0x68].assign("PLA", PLA, IMP, 4);
+            lookupTable[0x69].assign("ADC", ADC, IMM, 2);
+            lookupTable[0x6A].assign("ROR", ROR, IMP, 2);
+            lookupTable[0x6C].assign("JMP", JMP, IND, 5);
+            lookupTable[0x6D].assign("ADC", ADC, ABS, 4);
+            lookupTable[0x6E].assign("ROR", ROR, ABS, 6);
+
+            lookupTable[0x70].assign("BVS", BVS, REL, 2);
+            lookupTable[0x71].assign("ADC", ADC, IZY, 5);
+            lookupTable[0x75].assign("ADC", ADC, ZPX, 4);
+            lookupTable[0x76].assign("ROR", ROR, ZPX, 6);
+            lookupTable[0x78].assign("SEI", SEI, IMP, 2);
+            lookupTable[0x79].assign("ADC", ADC, ABY, 4);
+            lookupTable[0x7D].assign("ADC", ADC, ABX, 4);
+            lookupTable[0x7E].assign("ROR", ROR, ABX, 7);
+
             lookupTable[0x81].assign("STA", STA, IZX, 6);
             lookupTable[0x84].assign("STY", STY, ZP0, 3);
             lookupTable[0x85].assign("STA", STA, ZP0, 3);
@@ -649,24 +728,82 @@ namespace dotEmu.emulators.NES
             lookupTable[0x8D].assign("STA", STA, ABS, 4);
             lookupTable[0x8E].assign("STX", STX, ABS, 4);
 
+            lookupTable[0x90].assign("BCC", BCC, REL, 2);
+            lookupTable[0x91].assign("STA", STA, IZY, 6);
+            lookupTable[0x94].assign("STY", STY, ZPX, 4);
+            lookupTable[0x95].assign("STA", STA, ZPX, 4);
+            lookupTable[0x96].assign("STX", STX, ZPY, 4);
+            lookupTable[0x98].assign("TYA", TYA, IMP, 2);
+            lookupTable[0x99].assign("STA", STA, ABY, 5);
+            lookupTable[0x9A].assign("TXS", TXS, IMP, 2);
+            lookupTable[0x9D].assign("STA", STA, ABX, 5);
+
             lookupTable[0xA0].assign("LDY", LDY, IMM, 2);
             lookupTable[0xA1].assign("LDA", LDA, IZX, 6);
             lookupTable[0xA2].assign("LDX", LDX, IMM, 2);
             lookupTable[0xA4].assign("LDY", LDY, ZP0, 3);
+            lookupTable[0xA5].assign("LDA", LDA, ZP0, 3);
+            lookupTable[0xA6].assign("LDX", LDX, ZP0, 3);
+            lookupTable[0xA8].assign("TAY", TAY, IMP, 2);
+            lookupTable[0xA9].assign("LDA", LDA, IMM, 2);
+            lookupTable[0xAA].assign("TAX", TAX, IMP, 2);
+            lookupTable[0xAC].assign("LDY", LDY, ABS, 4);
+            lookupTable[0xAD].assign("LDA", LDA, ABS, 4);
+            lookupTable[0xAE].assign("LDX", LDX, ABS, 4);
 
-            /*{ "BMI", &a::BMI, &a::REL, 2 },{ "AND", &a::AND, &a::IZY, 5 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 4 },{ "AND", &a::AND, &a::ZPX, 4 },{ "ROL", &a::ROL, &a::ZPX, 6 },{ "???", &a::XXX, &a::IMP, 6 },{ "SEC", &a::SEC, &a::IMP, 2 },{ "AND", &a::AND, &a::ABY, 4 },{ "???", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 7 },{ "???", &a::NOP, &a::IMP, 4 },{ "AND", &a::AND, &a::ABX, 4 },{ "ROL", &a::ROL, &a::ABX, 7 },{ "???", &a::XXX, &a::IMP, 7 },
-		    { "RTI", &a::RTI, &a::IMP, 6 },{ "EOR", &a::EOR, &a::IZX, 6 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 3 },{ "EOR", &a::EOR, &a::ZP0, 3 },{ "LSR", &a::LSR, &a::ZP0, 5 },{ "???", &a::XXX, &a::IMP, 5 },{ "PHA", &a::PHA, &a::IMP, 3 },{ "EOR", &a::EOR, &a::IMM, 2 },{ "LSR", &a::LSR, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 2 },{ "JMP", &a::JMP, &a::ABS, 3 },{ "EOR", &a::EOR, &a::ABS, 4 },{ "LSR", &a::LSR, &a::ABS, 6 },{ "???", &a::XXX, &a::IMP, 6 },
-		    { "BVC", &a::BVC, &a::REL, 2 },{ "EOR", &a::EOR, &a::IZY, 5 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 4 },{ "EOR", &a::EOR, &a::ZPX, 4 },{ "LSR", &a::LSR, &a::ZPX, 6 },{ "???", &a::XXX, &a::IMP, 6 },{ "CLI", &a::CLI, &a::IMP, 2 },{ "EOR", &a::EOR, &a::ABY, 4 },{ "???", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 7 },{ "???", &a::NOP, &a::IMP, 4 },{ "EOR", &a::EOR, &a::ABX, 4 },{ "LSR", &a::LSR, &a::ABX, 7 },{ "???", &a::XXX, &a::IMP, 7 },
-		    { "RTS", &a::RTS, &a::IMP, 6 },{ "ADC", &a::ADC, &a::IZX, 6 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 3 },{ "ADC", &a::ADC, &a::ZP0, 3 },{ "ROR", &a::ROR, &a::ZP0, 5 },{ "???", &a::XXX, &a::IMP, 5 },{ "PLA", &a::PLA, &a::IMP, 4 },{ "ADC", &a::ADC, &a::IMM, 2 },{ "ROR", &a::ROR, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 2 },{ "JMP", &a::JMP, &a::IND, 5 },{ "ADC", &a::ADC, &a::ABS, 4 },{ "ROR", &a::ROR, &a::ABS, 6 },{ "???", &a::XXX, &a::IMP, 6 },
-		    { "BVS", &a::BVS, &a::REL, 2 },{ "ADC", &a::ADC, &a::IZY, 5 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 4 },{ "ADC", &a::ADC, &a::ZPX, 4 },{ "ROR", &a::ROR, &a::ZPX, 6 },{ "???", &a::XXX, &a::IMP, 6 },{ "SEI", &a::SEI, &a::IMP, 2 },{ "ADC", &a::ADC, &a::ABY, 4 },{ "???", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 7 },{ "???", &a::NOP, &a::IMP, 4 },{ "ADC", &a::ADC, &a::ABX, 4 },{ "ROR", &a::ROR, &a::ABX, 7 },{ "???", &a::XXX, &a::IMP, 7 },
+            lookupTable[0xB0].assign("BCS", BCS, REL, 2);
+            lookupTable[0xB1].assign("LDA", LDA, IZY, 5);
+            lookupTable[0xB4].assign("LDY", LDY, ZPX, 4);
+            lookupTable[0xB5].assign("LDA", LDA, ZPX, 4);
+            lookupTable[0xB6].assign("LDX", LDX, ZPY, 4);
+            lookupTable[0xB8].assign("CLV", CLV, IMP, 2);
+            lookupTable[0xB9].assign("LDA", LDA, ABY, 4);
+            lookupTable[0xBA].assign("TSX", TSX, IMP, 2);
+            lookupTable[0xBC].assign("LDY", LDY, ABX, 4);
+            lookupTable[0xBD].assign("LDA", LDA, ABX, 4);
+            lookupTable[0xBE].assign("LDX", LDX, ABY, 4);
 
-		    { "BCC", &a::BCC, &a::REL, 2 },{ "STA", &a::STA, &a::IZY, 6 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 6 },{ "STY", &a::STY, &a::ZPX, 4 },{ "STA", &a::STA, &a::ZPX, 4 },{ "STX", &a::STX, &a::ZPY, 4 },{ "???", &a::XXX, &a::IMP, 4 },{ "TYA", &a::TYA, &a::IMP, 2 },{ "STA", &a::STA, &a::ABY, 5 },{ "TXS", &a::TXS, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 5 },{ "???", &a::NOP, &a::IMP, 5 },{ "STA", &a::STA, &a::ABX, 5 },{ "???", &a::XXX, &a::IMP, 5 },{ "???", &a::XXX, &a::IMP, 5 },
-		    { "LDA", &a::LDA, &a::ZP0, 3 },{ "LDX", &a::LDX, &a::ZP0, 3 },{ "???", &a::XXX, &a::IMP, 3 },{ "TAY", &a::TAY, &a::IMP, 2 },{ "LDA", &a::LDA, &a::IMM, 2 },{ "TAX", &a::TAX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 2 },{ "LDY", &a::LDY, &a::ABS, 4 },{ "LDA", &a::LDA, &a::ABS, 4 },{ "LDX", &a::LDX, &a::ABS, 4 },{ "???", &a::XXX, &a::IMP, 4 },
-		    { "BCS", &a::BCS, &a::REL, 2 },{ "LDA", &a::LDA, &a::IZY, 5 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 5 },{ "LDY", &a::LDY, &a::ZPX, 4 },{ "LDA", &a::LDA, &a::ZPX, 4 },{ "LDX", &a::LDX, &a::ZPY, 4 },{ "???", &a::XXX, &a::IMP, 4 },{ "CLV", &a::CLV, &a::IMP, 2 },{ "LDA", &a::LDA, &a::ABY, 4 },{ "TSX", &a::TSX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 4 },{ "LDY", &a::LDY, &a::ABX, 4 },{ "LDA", &a::LDA, &a::ABX, 4 },{ "LDX", &a::LDX, &a::ABY, 4 },{ "???", &a::XXX, &a::IMP, 4 },
-		    { "CPY", &a::CPY, &a::IMM, 2 },{ "CMP", &a::CMP, &a::IZX, 6 },{ "???", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "CPY", &a::CPY, &a::ZP0, 3 },{ "CMP", &a::CMP, &a::ZP0, 3 },{ "DEC", &a::DEC, &a::ZP0, 5 },{ "???", &a::XXX, &a::IMP, 5 },{ "INY", &a::INY, &a::IMP, 2 },{ "CMP", &a::CMP, &a::IMM, 2 },{ "DEX", &a::DEX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 2 },{ "CPY", &a::CPY, &a::ABS, 4 },{ "CMP", &a::CMP, &a::ABS, 4 },{ "DEC", &a::DEC, &a::ABS, 6 },{ "???", &a::XXX, &a::IMP, 6 },
-		    { "BNE", &a::BNE, &a::REL, 2 },{ "CMP", &a::CMP, &a::IZY, 5 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 4 },{ "CMP", &a::CMP, &a::ZPX, 4 },{ "DEC", &a::DEC, &a::ZPX, 6 },{ "???", &a::XXX, &a::IMP, 6 },{ "CLD", &a::CLD, &a::IMP, 2 },{ "CMP", &a::CMP, &a::ABY, 4 },{ "NOP", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 7 },{ "???", &a::NOP, &a::IMP, 4 },{ "CMP", &a::CMP, &a::ABX, 4 },{ "DEC", &a::DEC, &a::ABX, 7 },{ "???", &a::XXX, &a::IMP, 7 },
-		    { "CPX", &a::CPX, &a::IMM, 2 },{ "SBC", &a::SBC, &a::IZX, 6 },{ "???", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "CPX", &a::CPX, &a::ZP0, 3 },{ "SBC", &a::SBC, &a::ZP0, 3 },{ "INC", &a::INC, &a::ZP0, 5 },{ "???", &a::XXX, &a::IMP, 5 },{ "INX", &a::INX, &a::IMP, 2 },{ "SBC", &a::SBC, &a::IMM, 2 },{ "NOP", &a::NOP, &a::IMP, 2 },{ "???", &a::SBC, &a::IMP, 2 },{ "CPX", &a::CPX, &a::ABS, 4 },{ "SBC", &a::SBC, &a::ABS, 4 },{ "INC", &a::INC, &a::ABS, 6 },{ "???", &a::XXX, &a::IMP, 6 },
-		    { "BEQ", &a::BEQ, &a::REL, 2 },{ "SBC", &a::SBC, &a::IZY, 5 },{ "???", &a::XXX, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 8 },{ "???", &a::NOP, &a::IMP, 4 },{ "SBC", &a::SBC, &a::ZPX, 4 },{ "INC", &a::INC, &a::ZPX, 6 },{ "???", &a::XXX, &a::IMP, 6 },{ "SED", &a::SED, &a::IMP, 2 },{ "SBC", &a::SBC, &a::ABY, 4 },{ "NOP", &a::NOP, &a::IMP, 2 },{ "???", &a::XXX, &a::IMP, 7 },{ "???", &a::NOP, &a::IMP, 4 },{ "SBC", &a::SBC, &a::ABX, 4 },{ "INC", &a::INC, &a::ABX, 7 },{ "???", &a::XXX, &a::IMP, 7 },*/
+            lookupTable[0xC0].assign("CPY", CPY, IMM, 2);
+            lookupTable[0xC1].assign("CMP", CMP, IZX, 6);
+            lookupTable[0xC4].assign("CPY", CPY, ZP0, 3);
+            lookupTable[0xC5].assign("CMP", CMP, ZP0, 3);
+            lookupTable[0xC6].assign("DEC", DEC, ZP0, 5);
+            lookupTable[0xC8].assign("INY", INY, IMP, 2);
+            lookupTable[0xC9].assign("CMP", CMP, IMM, 2);
+            lookupTable[0xCA].assign("DEX", DEX, IMP, 2);
+            lookupTable[0xCC].assign("CPY", CPY, ABS, 4);
+            lookupTable[0xCD].assign("CMP", CMP, ABS, 4);
+            lookupTable[0xCE].assign("DEC", DEC, ABS, 6);
+
+            lookupTable[0xD0].assign("BNE", BNE, REL, 2);
+            lookupTable[0xD1].assign("CMP", CMP, IZY, 5);
+            lookupTable[0xD5].assign("CMP", CMP, ZPX, 4);
+            lookupTable[0xD6].assign("DEC", DEC, ZPX, 6);
+            lookupTable[0xD8].assign("CLD", CLD, IMP, 2);
+            lookupTable[0xD9].assign("CMP", CMP, ABY, 4);
+            lookupTable[0xDD].assign("CMP", CMP, ABX, 4);
+            lookupTable[0xDE].assign("DEC", DEC, ABX, 7);
+
+            lookupTable[0xE0].assign("CPX", CPX, IMM, 2);
+            lookupTable[0xE1].assign("SBC", SBC, IZX, 6);
+            lookupTable[0xE4].assign("CPX", CPX, ZP0, 3);
+            lookupTable[0xE5].assign("SBC", SBC, ZP0, 3);
+            lookupTable[0xE6].assign("INC", INC, ZP0, 5);
+            lookupTable[0xE8].assign("INX", INX, IMP, 2);
+            lookupTable[0xE9].assign("SBC", SBC, IMM, 2);
+            lookupTable[0xEA].assign("NOP", NOP, IMP, 2);
+            lookupTable[0xEC].assign("CPX", CPX, ABS, 4);
+            lookupTable[0xED].assign("SBC", SBC, ABS, 4);
+            lookupTable[0xEE].assign("INC", INC, ABS, 6);
+
+            lookupTable[0xF0].assign("BEQ", BEQ, REL, 2);
+            lookupTable[0xF1].assign("SBC", SBC, IZY, 5);
+            lookupTable[0xF5].assign("SBC", SBC, ZPX, 4);
+            lookupTable[0xF6].assign("INC", INC, ZPX, 6);
+            lookupTable[0xF8].assign("SED", SED, IMP, 2);
+            lookupTable[0xF9].assign("SBC", SBC, ABY, 4);
+            lookupTable[0xFD].assign("SBC", SBC, ABX, 4);
+            lookupTable[0xFE].assign("INC", INC, ABX, 7);
         }
     }
 }

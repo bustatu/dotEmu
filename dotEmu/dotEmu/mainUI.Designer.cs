@@ -52,17 +52,17 @@ namespace dotEmu
             // clockLabel
             // 
             this.clockLabel.AutoSize = true;
-            this.clockLabel.Location = new System.Drawing.Point(12, 9);
+            this.clockLabel.Location = new System.Drawing.Point(10, 8);
             this.clockLabel.Name = "clockLabel";
-            this.clockLabel.Size = new System.Drawing.Size(54, 15);
+            this.clockLabel.Size = new System.Drawing.Size(49, 13);
             this.clockLabel.TabIndex = 0;
             this.clockLabel.Text = "Clock: -1";
             // 
             // doStepButton
             // 
-            this.doStepButton.Location = new System.Drawing.Point(12, 466);
+            this.doStepButton.Location = new System.Drawing.Point(10, 404);
             this.doStepButton.Name = "doStepButton";
-            this.doStepButton.Size = new System.Drawing.Size(75, 23);
+            this.doStepButton.Size = new System.Drawing.Size(64, 20);
             this.doStepButton.TabIndex = 1;
             this.doStepButton.Text = "Do Step";
             this.doStepButton.UseVisualStyleBackColor = true;
@@ -71,153 +71,153 @@ namespace dotEmu
             // NLabel
             // 
             this.NLabel.AutoSize = true;
-            this.NLabel.Location = new System.Drawing.Point(12, 35);
+            this.NLabel.Location = new System.Drawing.Point(10, 30);
             this.NLabel.Name = "NLabel";
-            this.NLabel.Size = new System.Drawing.Size(16, 15);
+            this.NLabel.Size = new System.Drawing.Size(15, 13);
             this.NLabel.TabIndex = 2;
             this.NLabel.Text = "N";
             // 
             // VLabel
             // 
             this.VLabel.AutoSize = true;
-            this.VLabel.Location = new System.Drawing.Point(34, 35);
+            this.VLabel.Location = new System.Drawing.Point(29, 30);
             this.VLabel.Name = "VLabel";
-            this.VLabel.Size = new System.Drawing.Size(14, 15);
+            this.VLabel.Size = new System.Drawing.Size(14, 13);
             this.VLabel.TabIndex = 3;
             this.VLabel.Text = "V";
             // 
             // ULabel
             // 
             this.ULabel.AutoSize = true;
-            this.ULabel.Location = new System.Drawing.Point(56, 35);
+            this.ULabel.Location = new System.Drawing.Point(48, 30);
             this.ULabel.Name = "ULabel";
-            this.ULabel.Size = new System.Drawing.Size(15, 15);
+            this.ULabel.Size = new System.Drawing.Size(15, 13);
             this.ULabel.TabIndex = 4;
             this.ULabel.Text = "U";
             // 
             // BLabel
             // 
             this.BLabel.AutoSize = true;
-            this.BLabel.Location = new System.Drawing.Point(78, 35);
+            this.BLabel.Location = new System.Drawing.Point(67, 30);
             this.BLabel.Name = "BLabel";
-            this.BLabel.Size = new System.Drawing.Size(14, 15);
+            this.BLabel.Size = new System.Drawing.Size(14, 13);
             this.BLabel.TabIndex = 5;
             this.BLabel.Text = "B";
             // 
             // DLabel
             // 
             this.DLabel.AutoSize = true;
-            this.DLabel.Location = new System.Drawing.Point(100, 35);
+            this.DLabel.Location = new System.Drawing.Point(86, 30);
             this.DLabel.Name = "DLabel";
-            this.DLabel.Size = new System.Drawing.Size(15, 15);
+            this.DLabel.Size = new System.Drawing.Size(15, 13);
             this.DLabel.TabIndex = 6;
             this.DLabel.Text = "D";
             // 
             // ILabel
             // 
             this.ILabel.AutoSize = true;
-            this.ILabel.Location = new System.Drawing.Point(122, 35);
+            this.ILabel.Location = new System.Drawing.Point(105, 30);
             this.ILabel.Name = "ILabel";
-            this.ILabel.Size = new System.Drawing.Size(10, 15);
+            this.ILabel.Size = new System.Drawing.Size(10, 13);
             this.ILabel.TabIndex = 7;
             this.ILabel.Text = "I";
             // 
             // ZLabel
             // 
             this.ZLabel.AutoSize = true;
-            this.ZLabel.Location = new System.Drawing.Point(144, 35);
+            this.ZLabel.Location = new System.Drawing.Point(123, 30);
             this.ZLabel.Name = "ZLabel";
-            this.ZLabel.Size = new System.Drawing.Size(14, 15);
+            this.ZLabel.Size = new System.Drawing.Size(14, 13);
             this.ZLabel.TabIndex = 8;
             this.ZLabel.Text = "Z";
             // 
             // CLabel
             // 
             this.CLabel.AutoSize = true;
-            this.CLabel.Location = new System.Drawing.Point(166, 35);
+            this.CLabel.Location = new System.Drawing.Point(142, 30);
             this.CLabel.Name = "CLabel";
-            this.CLabel.Size = new System.Drawing.Size(15, 15);
+            this.CLabel.Size = new System.Drawing.Size(14, 13);
             this.CLabel.TabIndex = 9;
             this.CLabel.Text = "C";
             // 
             // PCLabel
             // 
             this.PCLabel.AutoSize = true;
-            this.PCLabel.Location = new System.Drawing.Point(72, 9);
+            this.PCLabel.Location = new System.Drawing.Point(62, 8);
             this.PCLabel.Name = "PCLabel";
-            this.PCLabel.Size = new System.Drawing.Size(39, 15);
+            this.PCLabel.Size = new System.Drawing.Size(36, 13);
             this.PCLabel.TabIndex = 10;
             this.PCLabel.Text = "PC: -1";
             // 
             // SPLabel
             // 
             this.SPLabel.AutoSize = true;
-            this.SPLabel.Location = new System.Drawing.Point(141, 61);
+            this.SPLabel.Location = new System.Drawing.Point(142, 53);
             this.SPLabel.Name = "SPLabel";
-            this.SPLabel.Size = new System.Drawing.Size(37, 15);
+            this.SPLabel.Size = new System.Drawing.Size(36, 13);
             this.SPLabel.TabIndex = 11;
             this.SPLabel.Text = "SP: -1";
             // 
             // ALabel
             // 
             this.ALabel.AutoSize = true;
-            this.ALabel.Location = new System.Drawing.Point(12, 61);
+            this.ALabel.Location = new System.Drawing.Point(10, 53);
             this.ALabel.Name = "ALabel";
-            this.ALabel.Size = new System.Drawing.Size(32, 15);
+            this.ALabel.Size = new System.Drawing.Size(29, 13);
             this.ALabel.TabIndex = 12;
             this.ALabel.Text = "A: -1";
             // 
             // XLabel
             // 
             this.XLabel.AutoSize = true;
-            this.XLabel.Location = new System.Drawing.Point(55, 61);
+            this.XLabel.Location = new System.Drawing.Point(52, 53);
             this.XLabel.Name = "XLabel";
-            this.XLabel.Size = new System.Drawing.Size(31, 15);
+            this.XLabel.Size = new System.Drawing.Size(29, 13);
             this.XLabel.TabIndex = 13;
             this.XLabel.Text = "X: -1";
             // 
             // YLabel
             // 
             this.YLabel.AutoSize = true;
-            this.YLabel.Location = new System.Drawing.Point(98, 61);
+            this.YLabel.Location = new System.Drawing.Point(96, 53);
             this.YLabel.Name = "YLabel";
-            this.YLabel.Size = new System.Drawing.Size(31, 15);
+            this.YLabel.Size = new System.Drawing.Size(29, 13);
             this.YLabel.TabIndex = 14;
             this.YLabel.Text = "Y: -1";
             // 
             // MemoryLabel
             // 
             this.MemoryLabel.AutoSize = true;
-            this.MemoryLabel.Location = new System.Drawing.Point(12, 87);
+            this.MemoryLabel.Location = new System.Drawing.Point(10, 75);
             this.MemoryLabel.Name = "MemoryLabel";
-            this.MemoryLabel.Size = new System.Drawing.Size(55, 15);
+            this.MemoryLabel.Size = new System.Drawing.Size(47, 13);
             this.MemoryLabel.TabIndex = 15;
             this.MemoryLabel.Text = "Memory:";
             // 
             // MemoryLabel1
             // 
             this.MemoryLabel1.AutoSize = true;
-            this.MemoryLabel1.Location = new System.Drawing.Point(350, 87);
+            this.MemoryLabel1.Location = new System.Drawing.Point(300, 75);
             this.MemoryLabel1.Name = "MemoryLabel1";
-            this.MemoryLabel1.Size = new System.Drawing.Size(55, 15);
+            this.MemoryLabel1.Size = new System.Drawing.Size(47, 13);
             this.MemoryLabel1.TabIndex = 16;
             this.MemoryLabel1.Text = "Memory:";
             // 
             // dissLabel
             // 
             this.dissLabel.AutoSize = true;
-            this.dissLabel.Location = new System.Drawing.Point(680, 9);
+            this.dissLabel.Location = new System.Drawing.Point(604, 8);
             this.dissLabel.Name = "dissLabel";
-            this.dissLabel.Size = new System.Drawing.Size(75, 15);
+            this.dissLabel.Size = new System.Drawing.Size(68, 13);
             this.dissLabel.TabIndex = 17;
             this.dissLabel.Text = "Dissasembly:";
             // 
             // mainUI
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(944, 501);
+            this.ClientSize = new System.Drawing.Size(809, 434);
             this.Controls.Add(this.dissLabel);
             this.Controls.Add(this.MemoryLabel1);
             this.Controls.Add(this.MemoryLabel);
@@ -238,7 +238,7 @@ namespace dotEmu
             this.Controls.Add(this.clockLabel);
             this.ForeColor = System.Drawing.Color.Black;
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.Name = "mainUI";
             this.Text = "Emulator Engine";
             this.Load += new System.EventHandler(this.mainUI_Load);
@@ -269,4 +269,3 @@ namespace dotEmu
         private System.Windows.Forms.Label dissLabel;
     }
 }
-
