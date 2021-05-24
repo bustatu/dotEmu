@@ -16,7 +16,7 @@ namespace dotEmu
 
         private void doStepButton_Click(object sender, System.EventArgs e)
         {
-            while(emu.mainBus.cpu.cycles != 0) emu.mainBus.cpu.clock();
+            emu.mainBus.cpu.clock();
 
             clockLabel.Text = "Clock: " + emu.mainBus.cpu.cycles.ToString();
             PCLabel.Text = "PC: " + emu.mainBus.cpu.pc.ToString("X4");
@@ -24,6 +24,9 @@ namespace dotEmu
             ALabel.Text = "A: " + emu.mainBus.cpu.a.ToString("X4");
             XLabel.Text = "X: " + emu.mainBus.cpu.x.ToString("X4");
             YLabel.Text = "Y: " + emu.mainBus.cpu.y.ToString("X4");
+            dissLabel.Text = "Dissasembly: \n";
+            for (int j = -0xA; j <= 0xA; j++)
+                dissLabel.Text += "$" + (emu.mainBus.cpu.pc + j).ToString("X4") + ": " + emu.mainBus.cpu.lookupTable[emu.mainBus.CPURead((ushort)(emu.mainBus.cpu.pc + j), true)].name + "\n";
 
             if (emu.mainBus.cpu.getFlag(CPU6502.CPUFlags.N) == 0)
                 NLabel.ForeColor = Color.Red;

@@ -44,6 +44,7 @@ namespace dotEmu
             this.ALabel = new System.Windows.Forms.Label();
             this.XLabel = new System.Windows.Forms.Label();
             this.YLabel = new System.Windows.Forms.Label();
+            this.dissLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // clockLabel
@@ -182,12 +183,22 @@ namespace dotEmu
             this.YLabel.TabIndex = 14;
             this.YLabel.Text = "Y: -1";
             // 
+            // dissLabel
+            // 
+            this.dissLabel.AutoSize = true;
+            this.dissLabel.Location = new System.Drawing.Point(460, 8);
+            this.dissLabel.Name = "dissLabel";
+            this.dissLabel.Size = new System.Drawing.Size(68, 13);
+            this.dissLabel.TabIndex = 15;
+            this.dissLabel.Text = "Dissasembly:";
+            // 
             // mainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(809, 434);
+            this.Controls.Add(this.dissLabel);
             this.Controls.Add(this.YLabel);
             this.Controls.Add(this.XLabel);
             this.Controls.Add(this.ALabel);
@@ -230,5 +241,6 @@ namespace dotEmu
         private System.Windows.Forms.Label ALabel;
         private System.Windows.Forms.Label XLabel;
         private System.Windows.Forms.Label YLabel;
+        private System.Windows.Forms.Label dissLabel;
     }
 }
