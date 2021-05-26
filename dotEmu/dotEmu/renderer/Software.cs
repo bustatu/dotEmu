@@ -13,30 +13,39 @@ namespace dotEmu.renderer
 
         public int width;
         public int height;
-        public Byte[] rawData;
+        public uint[] rawData;
 
-        public SoftwareRenderer()
+
+        // Constructor sets default sizes
+        public SoftwareRenderer(int defaultX = 64, int defaultY = 32)
         {
-            resize(64, 32);
+            resize(defaultX, defaultY);
+
+            DoubleBuffered = true;
 
             for (int i = 1; i <= 32; i++)
-                setPixel(i-1, i-1, 0xFF, 0xFF, 0xFF);
+                setPixel(i, i, 0x11, 0xFF, 0xFF);
+
+            update();
         }
 
+        // Resizes the raw memory
         public void resize(int w, int h)
         {
             width = w;
             height = h;
-            rawData = new Byte[width * height * 4];
+            rawData = new uint[(width + 1) * (height + 1)];
         }
 
-        public void setPixel(int x, int y, Byte r, Byte g, Byte b)
+        // Sets pixel in raw memory
+        public void setPixel(int x, int y, uint r, uint g, uint b)
         {
-            rawData[y * width * 4 + x * 4] = 0xFF;
-            rawData[y * width * 4 + x * 4 + 1] = r;
-            rawData[y * width * 4 + x * 4 + 2] = g;
-            rawData[y * width * 4 + x * 4 + 3] = b;
+            rawData[y * width + x] = 0xFF000000 | (r << 16) | (g << 8) | (b << 0);
+        }
 
+        // Updates the control
+        public void update()
+        {
             Invalidate();
             Update();
         }
@@ -50,9 +59,8 @@ namespace dotEmu.renderer
             Graphics renderTarget = e.Graphics;
             renderTarget.CompositingMode = CompositingMode.SourceCopy;
             renderTarget.InterpolationMode = InterpolationMode.NearestNeighbor;
-            Bitmap image = new Bitmap(width, height, width * 4,
-                                PixelFormat.Format32bppPArgb, Marshal.UnsafeAddrOfPinnedArrayElement(rawData, 0));
-            renderTarget.DrawImage(image, 0, 0, Size.Width, Size.Height);
+            renderTarget.DrawImage(new Bitmap(width, height, width * 4,
+                                PixelFormat.Format32bppPArgb, Marshal.UnsafeAddrOfPinnedArrayElement(rawData, 0)), 0, 0, Size.Width, Size.Height);
         }
     }
 }
