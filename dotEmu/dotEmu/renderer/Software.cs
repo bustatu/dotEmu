@@ -23,9 +23,6 @@ namespace dotEmu.renderer
 
             DoubleBuffered = true;
 
-            for (int i = 1; i <= 32; i++)
-                setPixel(i, i, 0x11, 0xFF, 0xFF);
-
             update();
         }
 

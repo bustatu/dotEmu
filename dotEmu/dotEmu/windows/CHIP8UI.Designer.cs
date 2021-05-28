@@ -30,7 +30,9 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.dissLabel = new System.Windows.Forms.Label();
-            this.softwareRenderer = new dotEmu.renderer.SoftwareRenderer();
+            this.ILabel = new System.Windows.Forms.Label();
+            this.RegisterLabel = new System.Windows.Forms.Label();
+            this.softwareRenderer = new renderer.SoftwareRenderer(64, 32);
             this.SuspendLayout();
             // 
             // button1
@@ -52,6 +54,24 @@
             this.dissLabel.TabIndex = 1;
             this.dissLabel.Text = "Dissasembly:";
             // 
+            // ILabel
+            // 
+            this.ILabel.AutoSize = true;
+            this.ILabel.Location = new System.Drawing.Point(13, 101);
+            this.ILabel.Name = "ILabel";
+            this.ILabel.Size = new System.Drawing.Size(13, 13);
+            this.ILabel.TabIndex = 3;
+            this.ILabel.Text = "I:";
+            // 
+            // RegisterLabel
+            // 
+            this.RegisterLabel.AutoSize = true;
+            this.RegisterLabel.Location = new System.Drawing.Point(711, 240);
+            this.RegisterLabel.Name = "RegisterLabel";
+            this.RegisterLabel.Size = new System.Drawing.Size(54, 13);
+            this.RegisterLabel.TabIndex = 4;
+            this.RegisterLabel.Text = "Registers:";
+            // 
             // softwareRenderer
             // 
             this.softwareRenderer.BackColor = System.Drawing.Color.Fuchsia;
@@ -65,6 +85,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(944, 502);
+            this.Controls.Add(this.RegisterLabel);
+            this.Controls.Add(this.ILabel);
             this.Controls.Add(this.softwareRenderer);
             this.Controls.Add(this.dissLabel);
             this.Controls.Add(this.button1);
@@ -80,5 +102,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label dissLabel;
         private renderer.SoftwareRenderer softwareRenderer;
+        private System.Windows.Forms.Label ILabel;
+        private System.Windows.Forms.Label RegisterLabel;
     }
 }

@@ -15,8 +15,11 @@ namespace dotEmu.emulators.CHIP8
     partial class CHIP8CPU
     {
         public Byte[] RAM;
+        public Byte[] V;
         public UInt16 PC;
-        public bool[] display;
+        public Byte[] display;
+        public UInt16 I;
+        public bool drawFlag = true;
         public CHIP8Settings settings = new CHIP8Settings();
         private CHIP8Emulator parent;
 
@@ -28,6 +31,7 @@ namespace dotEmu.emulators.CHIP8
 
         public void clock()
         {
+            decodeOPCode((UInt16)((RAM[PC] << 8) | RAM[PC + 1]));
             PC += 2;
         }
 
@@ -36,25 +40,33 @@ namespace dotEmu.emulators.CHIP8
             // Reset the emu state
             reset();
 
-            // ROM reader
-            BinaryReader binReader = new BinaryReader(File.Open(path, FileMode.Open));
+            // If rom exists
+            if(File.Exists(path))
+            {
+                // ROM reader
+                BinaryReader binReader = new BinaryReader(File.Open(path, FileMode.Open));
 
-            // ROM is valid
-            if (binReader.BaseStream.Length < settings.RAMSize - settings.startPos)
-                for(var i = 0; i < binReader.BaseStream.Length; i++)
-                    RAM[settings.startPos + i] = binReader.ReadByte();
+                // ROM is valid
+                if (binReader.BaseStream.Length < settings.RAMSize - settings.startPos)
+                    for (var i = 0; i < binReader.BaseStream.Length; i++)
+                        RAM[settings.startPos + i] = binReader.ReadByte();
+                else
+                    MessageBox.Show("File is too big!\nMax length: " + (settings.RAMSize - settings.startPos) + "\nActual length: " + binReader.BaseStream.Length);
+
+                // Close file
+                binReader.Close();
+            }
             else
-                MessageBox.Show("File is too big!\nMax length: " + (settings.RAMSize - settings.startPos) + "\nActual length: " + binReader.BaseStream.Length);
-
-            // Close file
-            binReader.Close();
+                MessageBox.Show("The ROM you are trying to load has not been found.");
         }
 
         public void reset()
         {
             RAM = new Byte[settings.RAMSize];
             PC = (UInt16)settings.startPos;
-            display = new bool[settings.screenW * settings.screenH];
+            display = new Byte[settings.screenW * settings.screenH];
+            I = 0;
+            V = new Byte[0x10];
         }
     }
 }
