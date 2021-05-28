@@ -44,7 +44,6 @@ namespace dotEmu.renderer
         public void update()
         {
             Invalidate();
-            Update();
         }
 
         protected override void OnPaint(PaintEventArgs e)

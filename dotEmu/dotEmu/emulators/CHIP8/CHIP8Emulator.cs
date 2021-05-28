@@ -1,5 +1,6 @@
 ﻿using dotEmu.renderer;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace dotEmu.emulators.CHIP8
@@ -10,7 +11,8 @@ namespace dotEmu.emulators.CHIP8
 
         public CHIP8CPU cpu;
         public SoftwareRenderer renderer;
-        
+        public bool stopped = false;
+        private Thread thread;
 
         public void loadROM(string path)
         {
@@ -20,21 +22,23 @@ namespace dotEmu.emulators.CHIP8
 
         public void clock()
         {
-            cpu.clock();
-
-            if(cpu.drawFlag)
+            while(!stopped)
             {
-                for(var i = 0; i < cpu.settings.screenH; i++)
+                cpu.clock();
+                if (cpu.drawFlag)
                 {
-                    for(var j = 0; j < cpu.settings.screenW; j++)
+                    for (var i = 0; i < cpu.settings.screenH; i++)
                     {
-                        if (cpu.display[i * cpu.settings.screenW + j] != 0)
-                            renderer.setPixel(j + 1, i + 1, 0xFF, 0xFF, 0xFF);
-                        else renderer.setPixel(j + 1, i + 1, 0x00, 0x00, 0x00);
+                        for (var j = 0; j < cpu.settings.screenW; j++)
+                        {
+                            if (cpu.display[i * cpu.settings.screenW + j] != 0)
+                                renderer.setPixel(j + 1, i + 1, 0xFF, 0xFF, 0xFF);
+                            else renderer.setPixel(j + 1, i + 1, 0x00, 0x00, 0x00);
+                        }
                     }
+                    renderer.update();
+                    cpu.drawFlag = false;
                 }
-                renderer.update();
-                cpu.drawFlag = false;
             }
         }
 
@@ -43,6 +47,8 @@ namespace dotEmu.emulators.CHIP8
             // Init
             cpu = new CHIP8CPU(this);
             renderer = rendererToUse;
+            thread = new Thread(new ThreadStart(this.clock));
+            thread.Start();
         }
     }
 }
