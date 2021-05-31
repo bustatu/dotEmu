@@ -34,8 +34,11 @@ namespace dotEmu.emulators.CHIP8
 
         public void clock()
         {
-            decodeOPCode((UInt16)((RAM[PC] << 8) | RAM[PC + 1]));
-            PC += 2;
+            if(!parent.stopped)
+            {
+                decodeOPCode((UInt16)((RAM[PC] << 8) | RAM[PC + 1]));
+                PC += 2;
+            }
         }
 
         public void readROM(string path)

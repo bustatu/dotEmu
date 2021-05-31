@@ -9,7 +9,7 @@ namespace dotEmu.renderer
 {
     class SoftwareRenderer : Control, IRenderer
     {
-        public new string Name => "Software";
+        public string rendererName => "Software";
 
         public int width;
         public int height;

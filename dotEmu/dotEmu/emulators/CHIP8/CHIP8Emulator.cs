@@ -1,4 +1,5 @@
 ﻿using dotEmu.renderer;
+using dotEmu.windows;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -47,8 +48,23 @@ namespace dotEmu.emulators.CHIP8
             // Init
             cpu = new CHIP8CPU(this);
             renderer = rendererToUse;
+        }
+
+        public void start()
+        {
+            if (thread != null)
+                exit();
+
             thread = new Thread(new ThreadStart(this.clock));
             thread.Start();
+        }
+
+        public void exit()
+        {
+            stopped = true;
+
+            if(thread != null)
+                thread.Join();
         }
     }
 }

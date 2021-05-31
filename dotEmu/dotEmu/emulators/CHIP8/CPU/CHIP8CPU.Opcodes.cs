@@ -6,6 +6,12 @@ namespace dotEmu.emulators.CHIP8
 {
     partial class CHIP8CPU
     {
+        private void doUNKN(UInt16 opcode)
+        {
+            // Unknown opcode
+            MessageBox.Show("Unknown OPCode: " + opcode.ToString("X4"));
+        }
+
         private void do0000(UInt16 opcode)
         {
             // Multiple 0000 instructions
@@ -21,8 +27,7 @@ namespace dotEmu.emulators.CHIP8
                     PC = stack[--sp];
                     break;
                 default:
-                    // Unknown opcode
-                    MessageBox.Show("Unknown OPCode: " + opcode.ToString("X4"));
+                    doUNKN(opcode);
                     break;
             }
         }
@@ -121,8 +126,7 @@ namespace dotEmu.emulators.CHIP8
                     V[(opcode & 0xF00) >> 8] <<= 1;
                     break;
                 default:
-                    // Unknown opcode
-                    MessageBox.Show("Unknown OPCode: " + opcode.ToString("X4"));
+                    doUNKN(opcode);
                     break;
             }
         }
@@ -188,8 +192,7 @@ namespace dotEmu.emulators.CHIP8
                         V[i] = RAM[I + i];
                     break;
                 default:
-                    // Unknown opcode
-                    MessageBox.Show("Unknown OPCode: " + opcode.ToString("X4"));
+                    doUNKN(opcode);
                     break;
             }
         }
@@ -239,11 +242,8 @@ namespace dotEmu.emulators.CHIP8
                     doF000(opcode);
                     break;
                 default:
-                    {
-                        // Unknown opcode
-                        MessageBox.Show("Unknown OPCode: " + opcode.ToString("X4"));
-                        break;
-                    }
+                    doUNKN(opcode);
+                    break;
             }
         }
     }

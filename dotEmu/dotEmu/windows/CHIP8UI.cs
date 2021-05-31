@@ -1,4 +1,5 @@
 ﻿using dotEmu.emulators.CHIP8;
+using System;
 using System.Windows.Forms;
 
 namespace dotEmu.windows
@@ -7,37 +8,45 @@ namespace dotEmu.windows
     {
         CHIP8Emulator emu;
 
-        public void updateLabels()
+        public CHIP8UI()
         {
-            dissLabel.Text = "Dissasembly:\n";
-            for (int i = -2; i <= 12; i += 2)
-            {
-                dissLabel.Text += "$" + (emu.cpu.PC + i).ToString("X2") + ": ";
-                dissLabel.Text += ((emu.cpu.RAM[emu.cpu.PC + i] << 8) | emu.cpu.RAM[emu.cpu.PC + i + 1]).ToString("X4") + "\n";
-            }
+            emu = new CHIP8Emulator(softwareRenderer);
+            InitializeComponent();
+        }
 
-            ILabel.Text = "I: " + (emu.cpu.I).ToString("X3");
+        private void CHIP8UI_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            emu.exit();
+        }
 
-            RegisterLabel.Text = "Registers: \n";
-            for (var i = 0; i <= 0xF; i++)
-            {
-                RegisterLabel.Text += "V[0x" + i.ToString("X1") + "]: " + emu.cpu.V[i].ToString("X2") + '\n';
-            }
+        private void CHIP8UI_Load(object sender, System.EventArgs e)
+        {
 
-            stackLabel.Text = "Stack: \n";
-            for (var i = 0; i < emu.cpu.sp; i++)
+        }
+
+        private void CHIP8UI_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                stackLabel.Text += "[" + i + "]: " + emu.cpu.stack[i].ToString("X3") + '\n';
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                try
+                {
+                    emu.loadROM(files[0]);
+                    emu.start();
+                    AllowDrop = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    MessageBox.Show("Error loading ROM file; either corrupt or unsupported");
+                }
             }
         }
 
-        public CHIP8UI()
+        private void CHIP8UI_DragEnter(object sender, DragEventArgs e)
         {
-            InitializeComponent();
-            emu = new CHIP8Emulator(softwareRenderer);
-            emu.loadROM("roms/1dcell.ch8");
-
-            updateLabels();
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }
