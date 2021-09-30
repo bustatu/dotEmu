@@ -10,7 +10,6 @@ namespace dotEmu.emulators.CHIP8
         public int startPos = 0x200;
         public int screenW = 64;
         public int screenH = 32;
-        public int stackSize = 16;
     }
 
     partial class CHIP8CPU
@@ -20,7 +19,7 @@ namespace dotEmu.emulators.CHIP8
         public UInt16 PC;
         public Byte[] display;
         public UInt16[] stack;
-        public Byte sp;
+        public Byte stackPointer;
         public UInt16 I;
         public bool drawFlag = true;
         public CHIP8Settings settings = new CHIP8Settings();
@@ -34,11 +33,9 @@ namespace dotEmu.emulators.CHIP8
 
         public void clock()
         {
-            if(!parent.stopped)
-            {
-                decodeOPCode((UInt16)((RAM[PC] << 8) | RAM[PC + 1]));
-                PC += 2;
-            }
+            UInt16 opcode = (UInt16)((RAM[PC] << 8) | RAM[PC + 1]);
+            PC += 2;
+            decodeOPCode(opcode);
         }
 
         public void readROM(string path)
@@ -71,10 +68,11 @@ namespace dotEmu.emulators.CHIP8
             RAM = new Byte[settings.RAMSize];
             PC = (UInt16)settings.startPos;
             display = new Byte[settings.screenW * settings.screenH];
-            stack = new UInt16[settings.stackSize];
-            I = sp = 0;
-
+            stack = new UInt16[0x10];
+            stackPointer = 0;
+            I = 0;
             V = new Byte[0x10];
+            drawFlag = true;
         }
     }
 }

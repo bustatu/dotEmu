@@ -15,15 +15,30 @@ namespace dotEmu.renderer
         public int height;
         public uint[] rawData;
 
-
         // Constructor sets default sizes
         public SoftwareRenderer(int defaultX = 64, int defaultY = 32)
         {
             resize(defaultX, defaultY);
-
+            ResizeRedraw = true;
             DoubleBuffered = true;
 
             update();
+        }
+
+        public SoftwareRenderer()
+        {
+            InitializeComponent();
+            ResizeRedraw = true;
+            DoubleBuffered = true;
+
+            resize(64, 32);
+
+            update();
+        }
+
+        public void InitializeComponent()
+        {
+            // Do nothing
         }
 
         // Resizes the raw memory
@@ -31,6 +46,12 @@ namespace dotEmu.renderer
         {
             width = w;
             height = h;
+            reset();
+        }
+
+        // Clears the screen
+        public void reset()
+        {
             rawData = new uint[(width + 1) * (height + 1)];
         }
 

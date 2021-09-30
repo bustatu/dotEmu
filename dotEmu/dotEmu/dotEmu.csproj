@@ -46,19 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="emulators\CHIP8\CPU\CHIP8CPU.Core.cs" />
+    <Compile Include="emulators\CHIP8\Intepreter\CHIP8CPU.Core.cs" />
     <Compile Include="emulators\CHIP8\CHIP8Emulator.cs" />
-    <Compile Include="emulators\CHIP8\CPU\CHIP8CPU.Opcodes.cs" />
+    <Compile Include="emulators\CHIP8\Intepreter\CHIP8CPU.Opcodes.cs" />
     <Compile Include="emulators\IEmulator.cs" />
-    <Compile Include="emulators\NES\2502\PPU2502.cs" />
-    <Compile Include="emulators\NES\6502\6502.AdressingModes.cs" />
-    <Compile Include="emulators\NES\6502\6502.Core.cs" />
-    <Compile Include="emulators\NES\6502\6502.OPCodes.cs" />
-    <Compile Include="emulators\NES\Bus.cs" />
-    <Compile Include="emulators\NES\Cartridge.cs" />
-    <Compile Include="emulators\NES\Mappers\Mapper.cs" />
-    <Compile Include="emulators\NES\Mappers\Mapper000.cs" />
-    <Compile Include="emulators\NES\NESEmulator.cs" />
     <Compile Include="mainUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,12 +67,6 @@
     <Compile Include="windows\CHIP8UI.Designer.cs">
       <DependentUpon>CHIP8UI.cs</DependentUpon>
     </Compile>
-    <Compile Include="windows\NESUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="windows\NESUI.Designer.cs">
-      <DependentUpon>NESUI.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -93,9 +78,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="windows\CHIP8UI.resx">
       <DependentUpon>CHIP8UI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="windows\NESUI.resx">
-      <DependentUpon>NESUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

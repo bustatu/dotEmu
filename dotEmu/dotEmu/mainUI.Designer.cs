@@ -30,28 +30,17 @@ namespace dotEmu
         private void InitializeComponent()
         {
             this.CHIP8Button = new System.Windows.Forms.Button();
-            this.NESButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CHIP8Button
             // 
             this.CHIP8Button.Location = new System.Drawing.Point(13, 13);
             this.CHIP8Button.Name = "CHIP8Button";
-            this.CHIP8Button.Size = new System.Drawing.Size(75, 23);
+            this.CHIP8Button.Size = new System.Drawing.Size(919, 477);
             this.CHIP8Button.TabIndex = 0;
             this.CHIP8Button.Text = "CHIP8";
             this.CHIP8Button.UseVisualStyleBackColor = true;
             this.CHIP8Button.Click += new System.EventHandler(this.CHIP8Button_Click);
-            // 
-            // NESButton
-            // 
-            this.NESButton.Location = new System.Drawing.Point(95, 13);
-            this.NESButton.Name = "NESButton";
-            this.NESButton.Size = new System.Drawing.Size(75, 23);
-            this.NESButton.TabIndex = 1;
-            this.NESButton.Text = "NES";
-            this.NESButton.UseVisualStyleBackColor = true;
-            this.NESButton.Click += new System.EventHandler(this.NESButton_Click);
             // 
             // mainUI
             // 
@@ -59,7 +48,6 @@ namespace dotEmu
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(944, 502);
-            this.Controls.Add(this.NESButton);
             this.Controls.Add(this.CHIP8Button);
             this.ForeColor = System.Drawing.Color.Black;
             this.KeyPreview = true;
@@ -73,6 +61,5 @@ namespace dotEmu
         #endregion
 
         private System.Windows.Forms.Button CHIP8Button;
-        private System.Windows.Forms.Button NESButton;
     }
 }

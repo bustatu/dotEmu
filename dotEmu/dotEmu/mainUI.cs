@@ -17,13 +17,5 @@ namespace dotEmu
             form.ShowDialog();
             Show();
         }
-
-        private void NESButton_Click(object sender, System.EventArgs e)
-        {
-            NESUI form = new NESUI();
-            Hide();
-            form.ShowDialog();
-            Show();
-        }
     }
 }

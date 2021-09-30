@@ -1,5 +1,5 @@
 ﻿using dotEmu.renderer;
-using dotEmu.windows;
+using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -12,20 +12,29 @@ namespace dotEmu.emulators.CHIP8
 
         public CHIP8CPU cpu;
         public SoftwareRenderer renderer;
-        public bool stopped = false;
-        private Thread thread;
 
         public void loadROM(string path)
         {
             // Pass to the CPU
             cpu.readROM(path);
+            Thread thr = new Thread(new ThreadStart(clock));
+            thr.Start();
         }
 
         public void clock()
         {
-            while(!stopped)
+            while(true)
             {
-                cpu.clock();
+                try
+                {
+                    cpu.clock();
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return;
+                }
+
                 if (cpu.drawFlag)
                 {
                     for (var i = 0; i < cpu.settings.screenH; i++)
@@ -43,28 +52,17 @@ namespace dotEmu.emulators.CHIP8
             }
         }
 
+        public void reset()
+        {
+            cpu.reset();
+            renderer.reset();
+        }
+
         public CHIP8Emulator(SoftwareRenderer rendererToUse)
         {
             // Init
             cpu = new CHIP8CPU(this);
             renderer = rendererToUse;
-        }
-
-        public void start()
-        {
-            if (thread != null)
-                exit();
-
-            thread = new Thread(new ThreadStart(this.clock));
-            thread.Start();
-        }
-
-        public void exit()
-        {
-            stopped = true;
-
-            if(thread != null)
-                thread.Join();
         }
     }
 }
